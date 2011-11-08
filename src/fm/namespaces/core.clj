@@ -5,7 +5,7 @@
   "de name-space.core a name_space/core.clj"
   (let [onlist (map #(replace-re #"-" "_" %)
                     (re-seq #"[^.]+"  n))]
-    (str (join "/" onlist) ".clj")))
+    (str "src/" (join "/" onlist) ".clj")))
 
 (defn path->ns
   "de name_space/core.clj a name-space.core"

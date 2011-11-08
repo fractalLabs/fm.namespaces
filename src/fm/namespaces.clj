@@ -16,7 +16,7 @@
 (defn load-ns
   ([name]
    (do
-     (load-file (str "src/" (ns->path namespace)))
+     (load-file  (ns->path namespace))
      (use (symbol namespace))))
   ([name & others]
    (let [allns (conj others name)]
