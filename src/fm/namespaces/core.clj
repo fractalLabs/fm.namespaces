@@ -1,18 +1,18 @@
 (ns fm.namespaces.core
-  (:use [clojure.contrib.string :only [replace-re join]]))
+  (:require [clojure.string :only [replace join] :as st]))
 
 (defn ns->path [n]
   "de name-space.core a name_space/core.clj"
-  (let [onlist (map #(replace-re #"-" "_" %)
+  (let [onlist (map #(st/replace % "-" "_")
                     (re-seq #"[^.]+"  n))]
-    (str "src/" (join "/" onlist) ".clj")))
+    (str "src/" (st/join "/" onlist) ".clj")))
 
 (defn path->ns
   "de name_space/core.clj a name-space.core"
   [p]
-  (let [onlist (map #(replace-re #"_" "-" %)
-                    (re-seq #"[^/]+" (replace-re #".clj" "" p)))]
-    (join "." onlist)))
+  (let [onlist (map #(st/replace % "_" "-")
+                    (re-seq #"[^/]+" (st/replace p ".clj" "")))]
+    (st/join "." onlist)))
 
 (defn fromns
   "como el ls -R src regresa mucha basura, primero separaramos los ns por directorios
@@ -21,10 +21,10 @@
   [list]
   (let [dir (first list)
         files (take-while #(not (re-find #":" %)) (rest list))
-        namespace (replace-re #"src/?" "" (replace-re #":" "" dir))
+        namespace (st/replace (st/replace dir ":" "") #"src/?" "")
         namespace (if (= "" namespace) "" (str namespace "."))
         namespace (path->ns namespace)
-        cljfiles (map path->ns (map #(replace-re #".clj" "" %) (filter #(re-find #".clj" %) files)))]
+        cljfiles (map path->ns (map #(st/replace % ".clj" "") (filter #(re-find #".clj" %) files)))]
     (map #(str namespace %) cljfiles)))
 
 (defn separa-nss [list]

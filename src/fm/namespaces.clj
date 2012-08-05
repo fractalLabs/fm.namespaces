@@ -1,8 +1,7 @@
 (ns fm.namespaces 
   (:use
     fm.namespaces.core
-    cj.shell
-    [clojure.contrib.string :only [replace-re]]))
+    cj.shell))
 
 (let [lssrc (ls "-R src")]
     (def *namespaces* (separa-nss lssrc)))
@@ -16,12 +15,12 @@
 (defn load-ns
   ([name]
    (do
-     (load-file  (ns->path namespace))
-     (use (symbol namespace))))
+     (load-file  (ns->path name))
+     (use (symbol name))))
   ([name & others]
    (let [allns (conj others name)]
-     (apply load-ns allns)))
+     (map load-ns allns)))
   ([]
-   (apply load-ns *namespaces*)))
+   (map load-ns *namespaces*)))
 
 
